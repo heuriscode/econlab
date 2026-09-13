@@ -1,0 +1,71 @@
+{
+  "_README": [
+    "This is a copy-paste template for adding a project to the carousel.",
+    "The live data lives in index.html, in the `const PROJECTS = [ ... ]` array",
+    "near the bottom of the file (search for 'PROJECTS —').",
+    "",
+    "TO ADD A PROJECT:",
+    "  1. Copy the `project` object below (everything inside the braces).",
+    "  2. Paste it into the PROJECTS array in index.html, between two existing",
+    "     entries or at the end. Separate entries with a comma.",
+    "  3. Replace the text. Delete this _README key — it is not read by the page.",
+    "  4. Save. The pill, the slide and the counter all generate themselves.",
+    "",
+    "ORDER: projects appear in array order. Move a block to reorder it.",
+    "REMOVE: delete a whole block. One project is fine; the arrows just wrap.",
+    "",
+    "SPECIAL CHARACTERS: this is JSON inside JavaScript, so:",
+    "  - use &lt; and &gt; instead of < and >   e.g. \"&lt;1 day\", \"&gt;600%\"",
+    "  - write an apostrophe normally: \"EconLab's pipeline\"",
+    "  - do not add your own quote marks to `quote` — the page adds them"
+  ],
+
+  "project": {
+    "id": "short-slug",
+    "tag": "Pill Label Here",
+    "domain": "Sector · Sub-sector · Theme",
+    "title": "The project headline — one sentence, no full stop",
+    "quote": "A pull-quote describing the value delivered. Renders in quotation marks automatically.",
+    "summary": "One paragraph of context: what the client needed, what EconLab built or analysed, and the scale of it. Three or four sentences reads best.",
+
+    "points": [
+      "First thing delivered — a concrete capability or output",
+      "Second thing delivered",
+      "Third thing delivered",
+      "Fourth thing delivered",
+      "Add or remove lines freely; four to six reads best"
+    ],
+
+    "metrics": [
+      { "value": "847",      "label": "What this number counts — keep the label to one line or two" },
+      { "value": "$5m+",     "label": "Second headline figure" },
+      { "value": "&lt;1 day", "label": "Use the HTML entities for angle brackets" },
+      { "value": "+22%",     "label": "Two or four metrics look best; odd numbers leave a gap" }
+    ],
+
+    "flowLabel": "How EconLab created value",
+
+    "steps": [
+      {
+        "label": "STAGE NAME IN CAPS",
+        "title": "Short bold line describing what happened at this stage",
+        "text": "One or two sentences of detail. What was done, and why it mattered."
+      },
+      {
+        "label": "SECOND STAGE",
+        "title": "Short bold line",
+        "text": "Detail sentence."
+      },
+      {
+        "label": "THIRD STAGE",
+        "title": "Short bold line",
+        "text": "Detail sentence."
+      },
+      {
+        "label": "FOURTH STAGE",
+        "title": "Short bold line",
+        "text": "Detail sentence. The last step has no connector line beneath it."
+      }
+    ]
+  }
+}

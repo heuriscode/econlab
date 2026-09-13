@@ -1,0 +1,53 @@
+{
+  "_note": "Rebuilt from the three intact reports: 'Bridging gaps in the agrifood sustainability landscape' (Feb and May 2022) and the AASF Summary report. Client: Australian Farm Institute. Program funded by the Australian Government. Reports delivered by Heuris Pty Ltd; final report authored by Dr Daniel Gregg (Heuris) with Katie McRobert (AFI). Confirm AFI is happy to be named before publishing.",
+
+  "project": {
+    "id": "aasf",
+    "tag": "Sustainability Framework Design",
+    "domain": "Agri-food · Institutional Economics · Policy Design",
+    "title": "Economic case and governance design for a national agricultural sustainability framework",
+    "quote": "Australia has a small window of opportunity to lead the world on sustainability communication.",
+    "summary": "The Australian Farm Institute engaged Heuris to build the economic rationale and governance design for the Australian Agricultural Sustainability Framework, a Commonwealth-funded initiative to give Australian agriculture a common sustainability language. The framework had objectives but no articulated problem definition. We established the gap in economic terms — an information failure across a fragmented certification landscape — then designed a governance structure to close it, stress-tested against international precedent.",
+
+    "points": [
+      "Defined the framework's rationale as an information failure, giving the program a testable problem statement it previously lacked",
+      "Mapped the sustainability landscape into drivers, facilitators, metrics and assessment programs — the classification the framework now rests on",
+      "Applied the Regulator–Intermediary–Target model to position the framework as a domestic translation layer for global standards",
+      "Designed a four-part governance structure: Translation and Communications Group, industry Technical Working Groups, Markets and Information Group, and Board",
+      "Identified independence from both industry capture and government regulation as the precondition for the framework's legitimacy",
+      "Set out international recognition pathways, including ISEAL standards-holder membership and mutual mapping to existing frameworks"
+    ],
+
+    "metrics": [
+      { "value": "3", "label": "Structured review reports plus a synthesis, forming the framework's evidence base" },
+      { "value": "4", "label": "Governance components designed, from technical working groups through to board" },
+      { "value": "2", "label": "International governance case studies used to stress-test the design" },
+      { "value": "57", "label": "Competing Australian sustainability schemes mapped in the underpinning review" }
+    ],
+
+    "flowLabel": "How EconLab created value",
+
+    "steps": [
+      {
+        "label": "PROBLEM DEFINITION",
+        "title": "Named the market failure the framework exists to correct",
+        "text": "A rationale was missing from the program documentation, leaving objectives untethered. We defined the gap as information failure — producers unable to identify which schemes meet which market requirements, at costs that deter participation entirely."
+      },
+      {
+        "label": "ECONOMIC FOUNDATIONS",
+        "title": "Why sustainability claims fail without credible assurance",
+        "text": "Environmental production claims are strong credence attributes: unverifiable by testing the product. We showed how the resulting asymmetry produces both green-washing and gold-plating, and why neither resolves without an intermediary."
+      },
+      {
+        "label": "GOVERNANCE DESIGN",
+        "title": "A translation layer between global frameworks and Australian industry",
+        "text": "Using the Regulator–Intermediary–Target model, we designed a structure positioning the framework as an accredited domestic translation of international standards — with independence from industry capture built into the governance, not added afterwards."
+      },
+      {
+        "label": "STRESS-TESTING",
+        "title": "Tested the design against precedent and failure",
+        "text": "Benchmarked the proposed structure against GLOBALG.A.P.'s governance and against a documented governance failure in Australian construction, then set out test cases and open questions for the program's next phase."
+      }
+    ]
+  }
+}

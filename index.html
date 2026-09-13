@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EconLab — Quantitative Economics &amp; Analytics</title>
+<meta name="description" content="EconLab delivers research-grade quantitative economics: impact and investment evaluation, productivity benchmarking, forecasting, non-market valuation, panel and experimental methods.">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+/* ══════════════════════════════════════════
+   ECONLAB PALETTE — COOL MONOCHROME
+   Neutral grey ramp with a slight blue cast.
+   Hierarchy carried by contrast and weight, not hue.
+   ══════════════════════════════════════════ */
+:root {
+  /* Cool neutral ramp — monochrome, slight blue cast */
+  --eg-950: #08090a;   /* near-black */
+  --eg-900: #121417;   /* deepest ink */
+  --eg-800: #1e2126;   /* dark slate */
+  --eg-700: #2f343b;   /* mid-dark */
+  --eg-600: #4a5057;   /* mid grey — body copy on light */
+  --eg-500: #6b7178;   /* mid-light — captions, accents */
+  --eg-400: #989ea5;   /* the accent tone (was gold) */
+  --eg-300: #bcc1c6;   /* light grey */
+  --eg-200: #d8dbde;   /* pale */
+  --eg-100: #eaecee;   /* wash */
+  --eg-50:  #f4f5f6;   /* near-white cool */
+  --eg-20:  #fafbfb;   /* page surface */
+
+  /* Cool dark ink */
+  --ink:    #0f1113;
+  --ink-2:  #16181b;
+  --ink-3:  #1e2124;
+  --ink-4:  #282b2f;
+
+  /* Cool white surfaces */
+  --surface:   #fafbfb;
+  --surface-2: #f1f2f4;
+
+  /* Borders */
+  --border:   #e2e4e7;
+  --border-2: #c8ccd0;
+
+  /* Text */
+  --text-main:  var(--eg-900);
+  --text-muted: var(--eg-600);
+  --text-light: var(--eg-500);
+
+  /* Accents — monochrome: contrast does the work colour used to */
+  --rust:   #2f343b;
+  --rust-l: #eaecee;
+  --up:     #4a5057;
+  --up-l:   #eaecee;
+
+  --radius:    8px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: var(--surface);
+  color: var(--text-main);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.mono  { font-family: 'JetBrains Mono', monospace; }
+.serif { font-family: 'Instrument Serif', serif; }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 10px; font-weight: 600; letter-spacing: .12em;
+  text-transform: uppercase; padding: 5px 13px; border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace; margin-bottom: 18px;
+}
+.tag.warm  { background: var(--eg-50);  color: var(--eg-700); border: 1px solid var(--eg-200); }
+.tag.dark  { background: var(--ink);    color: var(--eg-200); }
+.tag.gold  { background: var(--eg-900); color: var(--eg-300); border: 1px solid var(--eg-700); }
+.tag.rust  { background: var(--rust-l); color: var(--rust);   border: 1px solid #d8dbde; }
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px; border-radius: var(--radius); font-size: 14px;
+  font-weight: 600; cursor: pointer; text-decoration: none; border: 1.5px solid transparent;
+  font-family: 'Outfit', sans-serif; transition: all .2s; white-space: nowrap;
+}
+.btn-primary { background: var(--eg-800); color: var(--eg-100); border-color: var(--eg-800); }
+.btn-primary:hover { background: var(--eg-950); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(15,17,19,.35); }
+.btn-ghost  { background: transparent; color: var(--eg-700); border-color: var(--border-2); }
+.btn-ghost:hover  { background: var(--eg-50); color: var(--eg-900); border-color: var(--eg-300); }
+/* Ghost buttons on dark surfaces need light ink — monochrome has no hue to fall back on */
+.hero .btn-ghost, .s-dark .btn-ghost, .s-cta .btn-ghost {
+  color: var(--eg-200); border-color: rgba(255,255,255,.62); background: transparent;
+}
+.hero .btn-ghost:hover, .s-dark .btn-ghost:hover, .s-cta .btn-ghost:hover {
+  background: rgba(255,255,255,.08); color: #fff; border-color: rgba(255,255,255,.75);
+}
+.btn-rust   { background: var(--rust); color: #fff; border-color: var(--rust); }
+.btn-rust:hover   { background: #121417; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(120,126,132,.35); }
+.btn-gold   { background: var(--eg-400); color: var(--eg-950); border-color: var(--eg-400); font-weight: 700; }
+.btn-gold:hover   { background: var(--eg-300); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(216,219,222,.4); }
+.btn-xl { padding: 15px 34px; font-size: 15.5px; border-radius: 12px; font-weight: 700; }
+.btn-lg { padding: 12px 26px; font-size: 14.5px; border-radius: 10px; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(250,251,251,.95); backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border); padding: 0 5%;
+}
+.nav-inner {
+  max-width: 1160px; margin: 0 auto; display: flex;
+  align-items: center; height: 60px; gap: 36px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px; flex-shrink: 0; text-decoration: none;
+}
+.nav-logo-mark {
+  width: 34px; height: 34px;
+}
+.nav-wordmark { font-size: 18px; font-weight: 700; color: var(--eg-900); letter-spacing: -.02em; }
+.nav-wordmark span { color: var(--eg-600); font-weight: 400; }
+.nav-links { display: flex; gap: 24px; flex: 1; }
+.nav-links a {
+  font-size: 13.5px; font-weight: 500; color: var(--eg-600);
+  text-decoration: none; transition: color .2s;
+}
+.nav-links a:hover { color: var(--eg-900); }
+.nav-ctas { display: flex; gap: 10px; margin-left: auto; align-items: center; }
+/* removed */
+
+/* ── HERO ── */
+.hero {
+  max-width: 100vw;
+  padding: 120px 5% 80px;
+  background: var(--ink);
+  position: relative; overflow: hidden;
+  min-height: 95vh; display: flex; flex-direction: column;
+}
+/* Warm grain texture feel via subtle grid */
+.hero::before {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(216,219,222,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(216,219,222,.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+/* Warm glow — amber-gold, not blue-green */
+.hero-glow-a {
+  position: absolute; top: -100px; left: -60px; width: 550px; height: 550px;
+  background: radial-gradient(ellipse, rgba(216,219,222,.15) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-glow-b {
+  position: absolute; bottom: -120px; right: -80px; width: 600px; height: 600px;
+  background: radial-gradient(ellipse, rgba(107,113,120,.10) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero-glow-c {
+  position: absolute; top: 40%; left: 40%; width: 400px; height: 300px;
+  background: radial-gradient(ellipse, rgba(120,126,132,.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  max-width: 1160px; margin: 0 auto; position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: 72px; align-items: start;
+  flex: 1;
+}
+.hero-left { padding-top: 16px; }
+
+.hero-eyebrow { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; }
+.hero-eyebrow-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--eg-400); }
+.hero-eyebrow-text {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 500;
+  color: var(--eg-300); letter-spacing: .12em; text-transform: uppercase;
+}
+
+.hero h1 {
+  font-size: clamp(38px, 4.2vw, 58px); font-weight: 700; line-height: 1.07;
+  letter-spacing: -.03em; color: #fff; margin-bottom: 24px;
+}
+.hero-position {
+  font-family: 'Instrument Serif', serif; font-style: italic;
+  font-size: clamp(17px, 2.4vw, 22px); line-height: 1.45;
+  color: var(--eg-200); margin: 20px 0 4px; max-width: 46ch; text-wrap: balance;
+  padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,.14);
+}
+.hero h1 .italic-em { display: block; text-wrap: balance;
+  font-family: 'Instrument Serif', serif; font-weight: 400; font-style: italic;
+  color: var(--eg-300); letter-spacing: -.01em;
+}
+.hero-sub { margin-top: 18px;
+  font-size: 16px; color: rgba(255,255,255,.8); line-height: 1.8;
+  max-width: 500px; margin-bottom: 38px; font-weight: 400;
+}
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 48px; }
+
+.hero-proof { display: flex; flex-direction: column; gap: 9px; }
+.hero-proof-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: rgba(255,255,255,.68);
+}
+.hero-proof-icon {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: rgba(216,219,222,.2); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; color: var(--eg-300);
+}
+
+/* Hero right — value diagram */
+.hero-right { padding-top: 8px; }
+.vd-frame {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(216,219,222,.18);
+  border-radius: var(--radius-xl); padding: 26px; position: relative;
+}
+.vd-frame-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--eg-300);
+  letter-spacing: .1em; text-transform: uppercase; margin-bottom: 18px;
+}
+.vd-card {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(216,219,222,.12);
+  border-radius: var(--radius-lg); padding: 18px 20px; margin-bottom: 8px;
+  transition: all .25s;
+}
+.vd-card:hover { background: rgba(255,255,255,.09); border-color: rgba(216,219,222,.25); }
+.vd-card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.vd-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px; letter-spacing: .08em; flex-shrink: 0;
+}
+.vd-c1 .vd-badge { background: rgba(216,219,222,.25); color: var(--eg-200); }
+.vd-c2 .vd-badge { background: rgba(107,113,120,.25); color: var(--eg-100); }
+.vd-c3 .vd-badge { background: rgba(120,126,132,.2);   color: #bcc1c6; }
+.vd-card h4  { font-size: 13.5px; font-weight: 600; color: #fff; }
+.vd-card p   { font-size: 11.5px; color: rgba(255,255,255,.74); line-height: 1.55; margin-top: 4px; }
+.vd-arrow    { text-align: center; font-size: 13px; color: var(--eg-600); padding: 2px 0; font-family: 'JetBrains Mono', monospace; }
+.vd-footer {
+  margin-top: 14px; padding: 12px 16px; background: rgba(216,219,222,.08);
+  border: 1px solid rgba(216,219,222,.2); border-radius: var(--radius);
+  font-size: 11.5px; color: rgba(255,255,255,.74); line-height: 1.5;
+}
+.vd-footer strong { color: var(--eg-300); font-weight: 600; }
+
+/* Hero bottom — faux screen */
+.hero-screen-wrap {
+  max-width: 1160px; margin: 56px auto 0; position: relative; z-index: 1;
+}
+.browser-chrome {
+  background: var(--ink-3); border-radius: 12px 12px 0 0;
+  border: 1px solid rgba(216,219,222,.1); border-bottom: none;
+}
+.browser-bar {
+  display: flex; align-items: center; gap: 10px; padding: 11px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.bdots { display: flex; gap: 5px; }
+.bdot  { width: 10px; height: 10px; border-radius: 50%; }
+.burl  {
+  flex: 1; max-width: 360px; background: rgba(255,255,255,.05); border-radius: 5px;
+  padding: 5px 12px; font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; color: rgba(255,255,255,.6); margin: 0 14px;
+}
+/* Faux dashboard */
+.faux-dash { background: var(--eg-20); display: flex; height: 370px; overflow: hidden; }
+.fd-sidebar {
+  width: 186px; background: var(--ink); flex-shrink: 0;
+  display: flex; flex-direction: column; padding: 16px 10px;
+  border-right: 1px solid rgba(216,219,222,.08);
+}
+.fd-logo { font-size: 13px; font-weight: 700; color: #fff; padding: 4px 8px 16px; letter-spacing: -.01em; }
+.fd-logo span { color: var(--eg-400); font-weight: 400; }
+.fd-section { font-family: 'JetBrains Mono', monospace; font-size: 8.5px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.58); padding: 8px 8px 4px; }
+.fd-item {
+  display: flex; align-items: center; gap: 8px; padding: 7px 8px;
+  border-radius: 6px; font-size: 11.5px; font-weight: 500;
+  color: rgba(255,255,255,.7); cursor: pointer; margin-bottom: 1px;
+}
+.fd-item.active { background: rgba(216,219,222,.18); color: var(--eg-200); }
+.fd-badge { margin-left: auto; background: rgba(216,219,222,.25); color: var(--eg-300); font-size: 8.5px; padding: 1px 6px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; }
+.fd-hr { border: none; border-top: 1px solid rgba(255,255,255,.05); margin: 8px 0; }
+.fd-main { flex: 1; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+.fd-top  { display: flex; align-items: flex-start; justify-content: space-between; }
+.fd-title h3 { font-size: 14.5px; font-weight: 700; color: var(--eg-800); letter-spacing: -.02em; }
+.fd-title p  { font-size: 10.5px; color: var(--eg-500); margin-top: 2px; }
+.fd-actions  { display: flex; gap: 7px; }
+.fdb { font-size: 10px; font-weight: 600; padding: 5px 12px; border-radius: 6px; border: 1px solid var(--border); background: #fff; color: var(--eg-600); cursor: pointer; font-family: 'Outfit', sans-serif; }
+.fdb.p { background: var(--eg-700); color: var(--eg-100); border-color: var(--eg-700); }
+.fd-kpis { display: grid; grid-template-columns: repeat(4,1fr); gap: 9px; }
+.fd-kpi {
+  background: #fff; border: 1px solid var(--border); border-radius: 7px;
+  padding: 10px 12px; position: relative; overflow: hidden;
+}
+.fd-kpi::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2.5px; }
+.fd-kpi.k1::before { background: linear-gradient(90deg, var(--eg-400), var(--eg-300)); }
+.fd-kpi.k2::before { background: linear-gradient(90deg, var(--up), #6b7178); }
+.fd-kpi.k3::before { background: linear-gradient(90deg, var(--rust), #6b7178); }
+.fd-kpi.k4::before { background: linear-gradient(90deg, var(--eg-600), var(--eg-400)); }
+.fd-kpi-lbl { font-size: 9px; font-weight: 600; color: var(--eg-500); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 4px; }
+.fd-kpi-val { font-size: 21px; font-weight: 800; color: var(--eg-800); line-height: 1; letter-spacing: -.04em; }
+.fd-kpi-chg { font-size: 9.5px; font-weight: 600; margin-top: 4px; color: var(--up); }
+.fd-charts  { display: grid; grid-template-columns: 1.8fr 1fr; gap: 10px; flex: 1; min-height: 0; }
+.fd-chart   {
+  background: #fff; border: 1px solid var(--border); border-radius: 7px;
+  padding: 12px 14px; display: flex; flex-direction: column; overflow: hidden;
+}
+.fd-chart-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-shrink: 0; }
+.fd-chart-title { font-size: 10.5px; font-weight: 700; color: var(--eg-700); }
+.fd-chart-meta  { font-size: 9.5px; color: var(--eg-300); font-family: 'JetBrains Mono', monospace; }
+.fd-chart-body  { flex: 1; min-height: 0; }
+
+/* ── SECTIONS ── */
+.section-wrap  { padding: 90px 5%; }
+.section-inner { max-width: 1160px; margin: 0 auto; }
+.section-hd    { margin-bottom: 52px; }
+.section-hd h2 {
+  font-size: clamp(26px, 3.2vw, 42px); font-weight: 700; letter-spacing: -.03em;
+  color: var(--eg-900); line-height: 1.1; margin-bottom: 10px;
+}
+.section-hd h2 em { font-style: normal; color: var(--eg-500); }
+.section-hd h2 .si  { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; }
+.section-hd p  { font-size: 15.5px; color: var(--eg-600); max-width: 540px; line-height: 1.8; }
+
+/* dark section overrides */
+.s-dark .section-hd h2 { color: #fff; }
+.s-dark .section-hd p  { color: rgba(255,255,255,.75); }
+
+/* ── WHAT WE DO ── */
+.s-services { background: var(--eg-950); }
+
+.cap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.cap-card {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(216,219,222,.12);
+  border-radius: var(--radius-xl); padding: 30px; transition: all .3s; position: relative; overflow: hidden;
+}
+.cap-card:hover { background: rgba(255,255,255,.08); border-color: rgba(216,219,222,.24); transform: translateY(-2px); }
+.cap-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.cap-card.c1::after { background: linear-gradient(90deg, var(--eg-400), var(--eg-300)); }
+.cap-card.c2::after { background: linear-gradient(90deg, var(--eg-500), var(--eg-400)); }
+.cap-card.c3::after { background: linear-gradient(90deg, var(--rust), #6b7178); }
+.cap-card.c4::after { background: linear-gradient(90deg, var(--eg-300), var(--eg-200)); }
+.cap-card .cap-num { color: var(--eg-300) !important;
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--eg-600);
+  letter-spacing: .1em; margin-bottom: 16px;
+}
+.cap-card h3 { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; letter-spacing: -.02em; }
+.cap-card p  { font-size: 13px; color: rgba(255,255,255,.78); line-height: 1.7; margin-bottom: 16px; }
+.cap-list { display: flex; flex-direction: column; gap: 7px; }
+.cap-item { font-size: 12.5px; color: rgba(255,255,255,.72); display: flex; align-items: flex-start; gap: 8px; line-height: 1.45; }
+.cap-item::before { content: '→'; color: var(--eg-400); flex-shrink: 0; margin-top: 1px; }
+
+/* removed */
+
+.dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+.dl-left h2 {
+  font-size: clamp(24px, 2.8vw, 38px); font-weight: 700; letter-spacing: -.03em;
+  color: var(--eg-900); line-height: 1.1; margin-bottom: 16px;
+}
+.dl-left h2 .si { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--eg-500); }
+.dl-left p { font-size: 14.5px; color: var(--eg-600); line-height: 1.8; margin-bottom: 18px; }
+
+.dl-points { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+.dl-point {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 15px 17px; background: var(--eg-50);
+  border: 1px solid var(--border); border-radius: var(--radius-lg); transition: border-color .2s;
+}
+.dl-point:hover { border-color: var(--eg-300); }
+.dl-point-icon {
+  width: 36px; height: 36px; border-radius: 8px; flex-shrink: 0;
+  background: var(--eg-100); display: flex; align-items: center; justify-content: center; font-size: 17px;
+}
+.dl-point-body h4 { font-size: 13px; font-weight: 700; color: var(--eg-900); margin-bottom: 3px; }
+.dl-point-body p  { font-size: 11.5px; color: var(--eg-600); line-height: 1.55; }
+
+/* Module cards on the right */
+.dl-right {
+  background: var(--eg-50); border: 1px solid var(--border);
+  border-radius: var(--radius-xl); padding: 28px;
+}
+.dl-right-lbl {
+  font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--eg-500);
+  letter-spacing: .1em; text-transform: uppercase; margin-bottom: 18px;
+}
+.mod-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mod-card {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 16px; transition: all .2s; cursor: pointer; text-decoration: none;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.mod-card:hover { border-color: var(--eg-300); box-shadow: 0 4px 16px rgba(15,17,19,.1); transform: translateY(-1px); }
+.mod-card-icon  { font-size: 22px; }
+.mod-card h4    { font-size: 13px; font-weight: 700; color: var(--eg-900); }
+.mod-card p     { font-size: 11px; color: var(--eg-500); line-height: 1.5; }
+.mod-card-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600;
+  letter-spacing: .05em; padding: 2px 8px; border-radius: 6px; width: fit-content;
+}
+.mb-own  { background: rgba(15,17,19,.1); color: var(--eg-700); }
+.mb-dev  { background: var(--rust-l); color: var(--rust); }
+.mb-cont { background: var(--up-l); color: var(--up); }
+
+.dl-cta-note {
+  margin-top: 16px; padding: 13px 16px; background: var(--eg-900); border-radius: var(--radius-lg);
+  font-size: 12px; color: rgba(255,255,255,.8); line-height: 1.5;
+}
+.dl-cta-note strong { color: var(--eg-300); }
+.dl-cta-note a { color: var(--eg-400); text-decoration: none; }
+.dl-cta-note a:hover { text-decoration: underline; }
+
+/* ── NETWORK ── */
+.s-network { background: var(--eg-900); }
+
+.net-grid { grid-template-columns: 1fr !important; max-width: 940px; }
+.net-grid-unused { display: grid; grid-template-columns: 1fr 1.1fr; gap: 64px; align-items: start; }
+.net-left p { font-size: 14.5px; color: rgba(255,255,255,.82); line-height: 1.85; margin-bottom: 20px; }
+
+.net-points { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+.net-point {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: 13.5px; color: rgba(255,255,255,.6); line-height: 1.55;
+}
+.net-dot {
+  width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+  background: rgba(216,219,222,.2); display: flex; align-items: center;
+  justify-content: center; font-size: 9px; color: var(--eg-300);
+}
+.net-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.net-stat {
+  background: rgba(255,255,255,.06); border: 1px solid rgba(216,219,222,.14);
+  border-radius: var(--radius-lg); padding: 18px 20px;
+}
+.net-stat-val   { font-size: 32px; font-weight: 800; color: var(--eg-400); letter-spacing: -.05em; line-height: 1; margin-bottom: 5px; }
+.net-stat-label { font-size: 11.5px; color: rgba(255,255,255,.72); line-height: 1.4; }
+
+/* Expert cards */
+.net-right {
+  background: rgba(255,255,255,.04); border: 1px solid rgba(216,219,222,.12);
+  border-radius: var(--radius-xl); padding: 26px;
+}
+.net-right-lbl {
+  font-family: 'JetBrains Mono', monospace; font-size: 9.5px; color: var(--eg-400);
+  letter-spacing: .1em; text-transform: uppercase; margin-bottom: 18px;
+}
+.expert-card {
+  background: rgba(255,255,255,.05); border: 1px solid rgba(216,219,222,.1);
+  border-radius: var(--radius-lg); padding: 14px 16px; margin-bottom: 8px;
+  display: flex; gap: 13px; align-items: flex-start; transition: all .2s;
+}
+.expert-card:hover { background: rgba(255,255,255,.09); }
+.expert-av {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(216,219,222,.2); display: flex; align-items: center;
+  justify-content: center; font-size: 12.5px; font-weight: 700; color: var(--eg-300);
+  letter-spacing: -.02em;
+}
+.expert-body h4 { font-size: 12.5px; font-weight: 700; color: #fff; margin-bottom: 1px; }
+.expert-body .expert-role { font-size: 10.5px; color: rgba(255,255,255,.7); margin-bottom: 6px; }
+.expert-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.expert-tag {
+  font-size: 9.5px; font-weight: 600; padding: 2px 7px; border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace; letter-spacing: .04em;
+  background: rgba(216,219,222,.14); color: var(--eg-300);
+}
+.net-note {
+  margin-top: 12px; padding: 12px 15px; background: rgba(216,219,222,.08);
+  border: 1px solid rgba(216,219,222,.18); border-radius: var(--radius);
+  font-size: 11.5px; color: rgba(255,255,255,.74); line-height: 1.55;
+}
+.net-note strong { color: var(--eg-300); font-weight: 600; }
+
+/* ── CASE STUDIES ── */
+.s-cases { background: var(--surface-2); }
+
+.case-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 32px; }
+.case-tab {
+  padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1.5px solid var(--border); background: #fff;
+  color: var(--eg-600); font-family: 'Outfit', sans-serif; transition: all .2s;
+}
+.case-tab.active { background: var(--eg-900); color: var(--eg-200); border-color: var(--eg-900); }
+.case-panel { display: none; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: start; }
+.case-panel.active { display: grid; }
+
+.case-content h3 {
+  font-size: clamp(19px, 2.3vw, 27px); font-weight: 700; letter-spacing: -.03em;
+  color: var(--eg-900); line-height: 1.15; margin-bottom: 10px;
+}
+.case-domain {
+  display: inline-flex; font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: .08em; font-weight: 600;
+  padding: 4px 11px; border-radius: 6px; margin-bottom: 12px;
+  background: var(--eg-100); color: var(--eg-700);
+}
+.case-quote {
+  font-family: 'Instrument Serif', serif; font-size: 15px; font-style: italic;
+  color: var(--eg-700); line-height: 1.65; border-left: 3px solid var(--eg-300);
+  padding-left: 14px; margin-bottom: 16px;
+}
+.case-content p { font-size: 13.5px; color: var(--eg-600); line-height: 1.75; margin-bottom: 14px; }
+.case-points { display: flex; flex-direction: column; gap: 7px; margin-bottom: 20px; }
+.case-point {
+  font-size: 13px; color: var(--eg-700); display: flex; align-items: flex-start; gap: 9px; line-height: 1.5;
+}
+.case-point::before { content: '✓'; color: var(--up); flex-shrink: 0; font-weight: 700; }
+.case-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.case-metric {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 14px 16px;
+  border-top: 3px solid var(--eg-400);
+}
+.case-metric-val   { font-size: 27px; font-weight: 800; letter-spacing: -.05em; color: var(--eg-800); line-height: 1; }
+.case-metric-label { font-size: 10.5px; color: var(--eg-500); margin-top: 5px; line-height: 1.4; }
+
+.case-visual {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius-xl);
+  overflow: hidden; box-shadow: 0 6px 32px rgba(15,17,19,.07);
+}
+.cv-head {
+  background: var(--ink); padding: 9px 14px; display: flex; align-items: center; gap: 8px;
+}
+.cvdots { display: flex; gap: 4px; }
+.cvdot  { width: 8px; height: 8px; border-radius: 50%; }
+.cv-lbl {
+  font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
+  color: rgba(255,255,255,.68); margin-left: 6px;
+}
+.cv-body { padding: 18px; }
+.cv-tag  {
+  display: inline-block; font-size: 9.5px; font-weight: 600;
+  font-family: 'JetBrains Mono', monospace; letter-spacing: .05em;
+  padding: 3px 9px; border-radius: 5px; margin-bottom: 8px;
+  background: var(--eg-100); color: var(--eg-700);
+}
+.cv-title { font-size: 13px; font-weight: 700; color: var(--eg-800); margin-bottom: 10px; }
+.cv-bars  { display: flex; align-items: flex-end; gap: 3px; height: 110px; }
+.cv-bar   { border-radius: 2px 2px 0 0; flex: 1; min-height: 4px; }
+
+/* ── TEAM ── */
+.s-team { background: #fff; }
+
+.team-equal-note {
+  font-size: 13.5px; color: var(--eg-600); line-height: 1.7;
+  margin-bottom: 40px; padding: 16px 20px;
+  background: var(--eg-50); border: 1px solid var(--border);
+  border-left: 4px solid var(--eg-400); border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+}
+
+.team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+.team-card {
+  border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden;
+  transition: all .25s; background: #fff;
+}
+.team-card:hover { transform: translateY(-3px); box-shadow: 0 10px 36px rgba(15,17,19,.09); border-color: var(--eg-200); }
+.team-card-top {
+  background: var(--eg-950); padding: 26px 24px 22px;
+  display: flex; align-items: flex-start; gap: 18px;
+}
+.team-av { position: relative; overflow: hidden; background: var(--eg-700) !important; color: var(--eg-100) !important; }
+.team-av img, .assoc-av img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: center top; display: block;
+}
+.team-av-stub {
+  width: 60px; height: 60px; border-radius: 50%; flex-shrink: 0;
+  background: rgba(216,219,222,.2); border: 2px solid rgba(216,219,222,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 800; color: var(--eg-300); letter-spacing: -.04em;
+}
+.team-header h3 { font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 3px; letter-spacing: -.02em; }
+.team-header .team-role { font-size: 10.5px; color: rgba(255,255,255,.72); font-family: 'JetBrains Mono', monospace; letter-spacing: .05em; margin-bottom: 8px; }
+.team-header .team-affil { font-size: 11.5px; color: rgba(255,255,255,.68); }
+.team-card-body { padding: 20px 22px; }
+.team-bio { font-size: 12.5px; color: var(--eg-600); line-height: 1.7; margin-bottom: 14px; }
+.team-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+.team-tag {
+  font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 5px;
+  font-family: 'JetBrains Mono', monospace; background: var(--eg-50);
+  color: var(--eg-700); border: 1px solid var(--eg-200);
+}
+.team-card-contact { font-size: 12px; color: var(--eg-500); }
+.team-card-contact a { color: var(--eg-600); text-decoration: none; }
+.team-card-contact a:hover { text-decoration: underline; }
+
+/* Network add-on */
+.team-network {
+  margin-top: 20px; background: var(--eg-950); border-radius: var(--radius-xl);
+  padding: 30px 36px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
+}
+.tn-left h3 { font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 10px; letter-spacing: -.02em; }
+.tn-left p  { font-size: 13px; color: rgba(255,255,255,.78); line-height: 1.75; }
+.tn-right   { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tn-stat    {
+  background: rgba(255,255,255,.06); border: 1px solid rgba(216,219,222,.12);
+  border-radius: var(--radius-lg); padding: 16px 18px; text-align: center;
+}
+.tn-stat-val { font-size: 28px; font-weight: 800; color: var(--eg-400); letter-spacing: -.05em; }
+.tn-stat-lbl { font-size: 10.5px; color: rgba(255,255,255,.7); margin-top: 4px; line-height: 1.35; }
+
+/* ── CTA ── */
+.s-cta { background: var(--eg-800); padding: 90px 5%; }
+.cta-inner { max-width: 680px; margin: 0 auto; text-align: center; }
+.s-cta h2 {
+  font-size: clamp(26px, 3.5vw, 44px); font-weight: 700; letter-spacing: -.03em;
+  color: #fff; line-height: 1.1; margin-bottom: 16px;
+}
+.s-cta h2 .si { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--eg-300); }
+.s-cta p { font-size: 15.5px; color: rgba(255,255,255,.8); line-height: 1.8; margin-bottom: 34px; }
+.cta-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 26px; }
+.cta-contact { font-size: 13px; color: rgba(255,255,255,.7); }
+.cta-contact a { color: var(--eg-300); text-decoration: none; }
+.cta-contact a:hover { text-decoration: underline; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink); padding: 36px 5% 24px;
+  border-top: 1px solid rgba(216,219,222,.08);
+}
+.footer-inner {
+  max-width: 1160px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+}
+.footer-logo { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -.02em; }
+.footer-logo span { color: var(--eg-400); font-weight: 400; }
+.footer-links { display: flex; gap: 18px; }
+.footer-links a { font-size: 12px; color: rgba(255,255,255,.64); text-decoration: none; transition: color .2s; }
+.footer-links a:hover { color: rgba(255,255,255,.65); }
+.footer-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.footer-copy  { font-size: 11px; color: rgba(255,255,255,.58); font-family: 'JetBrains Mono', monospace; }
+.footer-dl    { font-size: 11px; color: rgba(255,255,255,.62); }
+.footer-dl a  { color: var(--eg-400); text-decoration: none; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-left  { animation: fadeUp .65s ease both; }
+.hero-right { animation: fadeUp .65s .12s ease both; }
+
+/* ── RESPONSIVE ── */
+
+/* Tablet landscape — 960px */
+@media (max-width: 960px) {
+  .hero-inner          { grid-template-columns: 1fr; }
+  .hero-right          { display: none; }
+  .cap-grid            { grid-template-columns: 1fr; }
+  .dl-grid             { grid-template-columns: 1fr; }
+  .net-grid            { grid-template-columns: 1fr; }
+  .case-panel.active   { grid-template-columns: 1fr; }
+  .team-grid           { grid-template-columns: 1fr; }
+  .team-network        { grid-template-columns: 1fr; }
+
+  /* How-we-work: 2x2 grid at tablet, hide arrows */
+  .hw-pipeline {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .hw-arrow { display: none; }
+
+  /* Delivery band: 2x2 at tablet */
+  .hw-deliver { padding: 28px 26px 24px; }
+  .hw-deliver-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+}
+
+/* Nav collapses before the links can overflow — 900px */
+@media (max-width: 900px) {
+  .nav-links    { display: none; }
+  .nav-inner    { gap: 12px; }
+  .nav-ctas     { gap: 8px; margin-left: auto; flex-shrink: 0; }
+  .nav-logo     { min-width: 0; }
+  .nav-wordmark { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav-ctas .btn { padding: 9px 15px; font-size: 13px; }
+}
+
+/* Tablet portrait — 768px */
+@media (max-width: 768px) {
+  .section-wrap { padding: 64px 5%; }
+
+  /* Hero tighter */
+  .hero { padding: 100px 5% 60px; min-height: auto; }
+  .hero-actions { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .btn-xl { padding: 13px 26px; font-size: 14px; }
+
+  /* Modules: 1-column on tablet */
+  .mod-cards { grid-template-columns: 1fr; }
+
+  /* Case tabs: wrap */
+  .case-tabs { gap: 6px; }
+  .case-tab  { padding: 8px 14px; font-size: 12px; }
+
+  /* Team network: single col stats */
+  .tn-right { grid-template-columns: 1fr 1fr; }
+
+  /* Network section stats: 2-col */
+  .net-stats { grid-template-columns: 1fr 1fr; }
+}
+
+/* Mobile — 600px */
+@media (max-width: 600px) {
+  .nav-links   { display: none; }
+  .nav-ctas    { gap: 8px; margin-left: auto; flex-shrink: 0; }
+  .nav-inner   { gap: 12px; }
+  .nav-logo    { min-width: 0; }
+  .nav-wordmark { font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nav-wordmark span { display: none; }
+  .nav-ctas .btn { padding: 9px 15px; font-size: 13px; }
+
+  .hero h1     { font-size: clamp(30px, 8vw, 42px); }
+  .hero-proof  { gap: 8px; }
+  .hero-position { font-size: 17px; margin: 16px 0 2px; max-width: none; padding-bottom: 16px; }
+  .hero-actions { align-self: stretch; }
+  .hero-actions .btn { justify-content: center; width: 100%; }
+
+  /* Projects carousel: full-width pills, roomier tap targets */
+  .pc-tags { gap: 6px; }
+  .pc-tag  { font-size: 12.5px; padding: 9px 14px; }
+  .pc-btn  { width: 46px; height: 46px; }
+  .pc-nav  { margin-top: 20px; }
+
+  /* Associates: single column */
+  .assoc-grid { grid-template-columns: 1fr !important; }
+  .assoc-av { width: 42px; height: 42px; font-size: 12px; }
+
+  /* Contact: keep the email from overflowing */
+  .cta-email { font-size: clamp(21px, 6.4vw, 30px); }
+
+  /* Director cards: stack avatar above name so long titles don't crush */
+  .team-card-top { align-items: flex-start; }
+
+  /* How-we-work: single column on mobile */
+  .hw-pipeline { grid-template-columns: 1fr; gap: 10px; }
+
+  /* Delivery band: single column, dividers instead of gaps */
+  .hw-deliver { padding: 24px 20px; border-radius: var(--radius-lg); }
+  .hw-deliver-hd { margin-bottom: 20px; }
+  .hw-deliver-grid { grid-template-columns: 1fr; gap: 0; }
+  .hw-d { padding: 18px 0; border-top: 1px solid rgba(255,255,255,.12); }
+  .hw-d:first-child { padding-top: 0; border-top: 0; }
+  .hw-d:last-child { padding-bottom: 0; }
+  .hw-d-ico { margin-bottom: 10px; }
+
+  /* Case metrics: stack */
+  .case-metrics { grid-template-columns: 1fr; }
+
+  /* Team network stats: 1-col */
+  .tn-right { grid-template-columns: 1fr; }
+  .net-stats { grid-template-columns: 1fr; }
+
+  /* Modules: ensure 1 column */
+  .mod-cards { grid-template-columns: 1fr; }
+
+  /* Footer: stack */
+  .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+  .footer-right { align-items: flex-start; }
+}
+
+/* Very small — 380px */
+@media (max-width: 380px) {
+  nav { padding: 0 4%; }
+  .section-wrap { padding: 48px 4%; }
+  .hero { padding: 90px 4% 48px; }
+  .cta-email { font-size: 20px; }
+  .pc-tag { font-size: 12px; padding: 8px 12px; }
+  .hw-step { padding: 16px 14px; }
+  .hw-deliver { padding: 20px 16px; }
+  .cap-card { padding: 20px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">
+      <!-- Mountain logo mark using earls green palette -->
+      <svg class="nav-logo-mark" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="34" height="34" rx="7" fill="#121417"/>
+        <path d="M3 26 Q9 13 15 17 Q19 20 23 11 L30 26Z" fill="rgba(216,219,222,0.2)"/>
+        <path d="M3 26 Q7 16 12 19 Q15 21 19 14 L22 26Z" fill="rgba(216,219,222,0.45)"/>
+        <path d="M16 26 Q20 18 23 21 Q25 22 28 17 L30 26Z" fill="rgba(188,193,198,0.35)"/>
+      </svg>
+      <div>
+        <div class="nav-wordmark">EconLab<span> · quantitative economics</span></div>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="#howwework">How We Work</a>
+      <a href="#services">Capabilities</a>
+      <a href="#network">Expertise</a>
+      <a href="#cases">Projects</a>
+      <a href="#team">People</a>
+    </div>
+    <div class="nav-ctas">
+      <a href="#contact" class="btn btn-gold">Get in touch</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-glow-a"></div>
+  <div class="hero-glow-b"></div>
+  <div class="hero-glow-c"></div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-dot"></div>
+        <span class="hero-eyebrow-text">Quantitative Economics &amp; Analytics</span>
+      </div>
+      <h1>Rigorous economics.<span class="italic-em">Higher impact, faster delivery.</span></h1>
+      <!-- POSITIONING LINE — alternates are listed in DEPLOY.md if you want to swap it -->
+      <p class="hero-position">Your quantitative team when you don't have one. Your expert backup when you do.</p>
+      <p class="hero-sub">
+        Research-grade quantitative economics in natural resource, agricultural and agri-food systems — impact evaluation, valuation, forecasting and benchmarking, delivered to the standard your clients and funders will test them against.
+      </p>
+      <div class="hero-actions">
+        <a href="#contact" class="btn btn-gold btn-xl">Get in touch →</a>
+        <a href="#cases" class="btn btn-ghost btn-xl">See our projects</a>
+      </div>
+      <div class="hero-proof">
+        <div class="hero-proof-item">
+          <div class="hero-proof-icon">✓</div>
+          <span>Methods drawn from the peer-reviewed literature our economists publish in</span>
+        </div>
+        <div class="hero-proof-item">
+          <div class="hero-proof-icon">✓</div>
+          <span>Research-active analysts — professors and senior fellows, engaged as each project demands</span>
+        </div>
+        <div class="hero-proof-item">
+          <div class="hero-proof-icon">✓</div>
+          <span>Analysis, data pipelines and reporting delivered as one connected workstream</span>
+        </div>
+        <div class="hero-proof-item">
+          <div class="hero-proof-icon">✓</div>
+          <span>Scoped and fixed-price — clear deliverables, no open-ended retainers</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="vd-frame">
+        <div class="vd-frame-label">// What EconLab brings</div>
+
+        <div class="vd-card vd-c1">
+          <div class="vd-card-head">
+            <span class="vd-badge">Depth of method</span>
+            <span style="font-size:10.5px;color:rgba(255,255,255,.62);margin-left:auto;font-family:'JetBrains Mono',monospace">peer-reviewed</span>
+          </div>
+          <h4>Research-grade quantitative economics</h4>
+          <p>Impact evaluation, choice experiments, productivity benchmarking, forecasting, panel and experimental methods — applied to real decisions.</p>
+        </div>
+
+        <div class="vd-arrow">↓</div>
+
+        <div class="vd-card vd-c2">
+          <div class="vd-card-head">
+            <span class="vd-badge">Reliable pipelines</span>
+            <span style="font-size:10.5px;color:rgba(255,255,255,.62);margin-left:auto;font-family:'JetBrains Mono',monospace">automated</span>
+          </div>
+          <h4>End-to-end data engineering</h4>
+          <p>Entry, validation, analytics and reporting as one pipeline — less duplication, fewer errors, faster turnaround.</p>
+        </div>
+
+        <div class="vd-arrow">↓</div>
+
+        <div class="vd-card vd-c3">
+          <div class="vd-card-head">
+            <span class="vd-badge">Client-first delivery</span>
+            <span style="font-size:10.5px;color:rgba(255,255,255,.62);margin-left:auto;font-family:'JetBrains Mono',monospace">handover</span>
+          </div>
+          <h4>Live tools &amp; capability transfer</h4>
+          <p>Interactive outputs your stakeholders actually use, and tools your team can operate once we step back.</p>
+        </div>
+
+        <div class="vd-footer">
+          <strong>The result:</strong> findings that hold up under scrutiny, and capability that stays in the organisation after the engagement ends.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW WE WORK ══ -->
+<style>
+/* Flow diagram styles */
+.s-howwework { background: var(--surface-2); }
+.hw-intro {
+  max-width: 680px; margin: 0 auto 56px; text-align: center;
+}
+.hw-intro h2 {
+  font-size: clamp(26px, 3vw, 40px); font-weight: 700; letter-spacing: -.03em;
+  color: var(--eg-900); line-height: 1.1; margin-bottom: 14px;
+}
+.hw-intro h2 .si { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; color: var(--eg-500); }
+.hw-intro p { font-size: 15px; color: var(--eg-600); line-height: 1.8; }
+
+/* The pipeline row */
+.hw-pipeline {
+  display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr;
+  align-items: start; gap: 0; margin-bottom: 48px;
+}
+.hw-step {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius-xl);
+  padding: 22px 20px; position: relative; transition: box-shadow .2s;
+}
+.hw-step:hover { box-shadow: 0 6px 24px rgba(15,17,19,.1); border-color: var(--eg-300); }
+.hw-step::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+.hw-step.hs1::before { background: linear-gradient(90deg, var(--eg-300), var(--eg-400)); }
+.hw-step.hs2::before { background: linear-gradient(90deg, var(--eg-400), var(--eg-500)); }
+.hw-step.hs3::before { background: linear-gradient(90deg, var(--eg-500), var(--eg-600)); }
+.hw-step.hs4::before { background: linear-gradient(90deg, var(--eg-600), var(--eg-700)); }
+.hw-step-num { color: var(--eg-600) !important;
+  font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600;
+  letter-spacing: .12em; color: var(--eg-400); margin-bottom: 10px; display: block;
+}
+.hw-step h4 { font-size: 14px; font-weight: 700; color: var(--eg-900); margin-bottom: 7px; letter-spacing: -.01em; }
+.hw-step p  { font-size: 12px; color: var(--eg-600); line-height: 1.6; margin-bottom: 10px; }
+.hw-step-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.hw-tag {
+  font-size: 9.5px; font-weight: 600; padding: 2px 7px; border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace; background: var(--eg-50);
+  color: var(--eg-600); border: 1px solid var(--eg-200);
+}
+.hw-arrow {
+  display: flex; align-items: center; justify-content: center;
+  padding-top: 50px; color: var(--eg-300); font-size: 20px;
+}
+
+/* Delivery band — what the approach means for the client */
+.hw-deliver {
+  background: var(--eg-950); border-radius: var(--radius-xl);
+  padding: 34px 34px 30px;
+}
+.hw-deliver-hd { max-width: 62ch; margin-bottom: 28px; }
+.hw-deliver-hd h3 {
+  font-size: clamp(18px, 2.2vw, 22px); font-weight: 700; color: #fff;
+  letter-spacing: -.02em; line-height: 1.25; margin-bottom: 9px;
+}
+.hw-deliver-hd p { font-size: 14px; color: rgba(255,255,255,.72); line-height: 1.7; }
+.hw-deliver-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px;
+}
+.hw-d { min-width: 0; }
+.hw-d-ico {
+  width: 26px; height: 26px; color: var(--eg-300);
+  display: block; margin-bottom: 12px;
+}
+.hw-d h4 {
+  font-size: 14.5px; font-weight: 700; color: #fff;
+  letter-spacing: -.01em; line-height: 1.35; margin-bottom: 7px;
+}
+.hw-d p { font-size: 13px; color: rgba(255,255,255,.72); line-height: 1.65; }
+
+/* Responsive — declared here so they follow the base rules above in source order */
+@media (max-width: 960px) {
+  .hw-pipeline { grid-template-columns: 1fr 1fr; gap: 12px; }
+  .hw-arrow { display: none; }
+  .hw-deliver { padding: 28px 26px 24px; }
+  .hw-deliver-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+}
+@media (max-width: 600px) {
+  .hw-pipeline { grid-template-columns: 1fr; gap: 10px; }
+  .hw-deliver { padding: 24px 20px; border-radius: var(--radius-lg); }
+  .hw-deliver-hd { margin-bottom: 20px; }
+  .hw-deliver-grid { grid-template-columns: 1fr; gap: 0; }
+  .hw-d { padding: 18px 0; border-top: 1px solid rgba(255,255,255,.14); }
+  .hw-d:first-child { padding-top: 0; border-top: 0; }
+  .hw-d:last-child { padding-bottom: 0; }
+  .hw-d-ico { margin-bottom: 10px; }
+  .hw-intro { margin-bottom: 34px; }
+}
+@media (max-width: 380px) {
+  .hw-step { padding: 16px 14px; }
+  .hw-deliver { padding: 20px 16px; }
+}
+
+</style>
+
+<section class="section-wrap s-howwework" id="howwework">
+  <div class="section-inner">
+    <div class="hw-intro">
+      <div class="tag warm">// How we work</div>
+      <h2>From first question to<br><span class="si">decisions your clients trust</span></h2>
+      <p>One connected workstream — design, data, analysis and engagement — so nothing is lost between the method and what the client actually sees.</p>
+    </div>
+
+    <div class="hw-pipeline">
+      <div class="hw-step hs1">
+        <span class="hw-step-num">01 // RESEARCH DESIGN</span>
+        <h4>Problem framing &amp; research design</h4>
+        <p>We frame the question, design a theoretically-grounded method, and specify the data and analytical framework before anything is built.</p>
+        <div class="hw-step-tags">
+          <span class="hw-tag">Stakeholder scoping</span>
+          <span class="hw-tag">Method selection</span>
+          <span class="hw-tag">Data audit</span>
+        </div>
+      </div>
+      <div class="hw-arrow">→</div>
+      <div class="hw-step hs2">
+        <span class="hw-step-num">02 // DATA PIPELINE</span>
+        <h4>Data collection, validation &amp; processing</h4>
+        <p>Modular pipelines from entry portals through automated validation to clean, analysis-ready data. Point-of-entry QA eliminates downstream errors.</p>
+        <div class="hw-step-tags">
+          <span class="hw-tag">Web portals</span>
+          <span class="hw-tag">Auto-validation</span>
+          <span class="hw-tag">Python / R pipelines</span>
+        </div>
+      </div>
+      <div class="hw-arrow">→</div>
+      <div class="hw-step hs3">
+        <span class="hw-step-num">03 // ANALYSIS</span>
+        <h4>Rigorous quantitative analysis</h4>
+        <p>Peer-reviewed methods applied to your data — evaluation, benchmarking, forecasting, valuation — chosen for theoretical validity and practical defensibility.</p>
+        <div class="hw-step-tags">
+          <span class="hw-tag">Econometrics</span>
+          <span class="hw-tag">Benchmarking</span>
+          <span class="hw-tag">Forecasting</span>
+          <span class="hw-tag">Valuation</span>
+        </div>
+      </div>
+      <div class="hw-arrow">→</div>
+      <div class="hw-step hs4">
+        <span class="hw-step-num">04 // ENGAGEMENT</span>
+        <h4>Client-facing tools &amp; reporting</h4>
+        <p>Live, interactive results with automated reporting and stakeholder portals — outputs your clients engage with, not PDFs they file.</p>
+        <div class="hw-step-tags">
+          <span class="hw-tag">Live dashboards</span>
+          <span class="hw-tag">Auto-reports</span>
+          <span class="hw-tag">Client portals</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hw-deliver">
+      <div class="hw-deliver-hd">
+        <h3>What that means for your organisation</h3>
+        <p>Every engagement is built so the value outlasts the invoice — the analysis is defensible, the pipeline keeps running, and your stakeholders can see the results for themselves.</p>
+      </div>
+      <div class="hw-deliver-grid">
+        <div class="hw-d">
+          <svg class="hw-d-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3l2.6 5.6 6.1.8-4.5 4.2 1.2 6.1L12 16.8 6.6 19.7l1.2-6.1L3.3 9.4l6.1-.8z"/>
+          </svg>
+          <h4>Research-grade, at commercial pace</h4>
+          <p>Methods from the peer-reviewed literature, delivered on project timelines rather than academic ones. Rigour is not the thing you trade away to move quickly.</p>
+        </div>
+        <div class="hw-d">
+          <svg class="hw-d-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 6h7a3 3 0 013 3v9"/><path d="M20 18h-7a3 3 0 01-3-3V6"/>
+            <circle cx="4" cy="6" r="1.8"/><circle cx="20" cy="18" r="1.8"/>
+          </svg>
+          <h4>Pipelines, not one-off answers</h4>
+          <p>Analysis arrives as a documented, re-runnable pipeline your team owns. Next year's update is a re-run, not a rebuild — and the capability stays in your organisation.</p>
+        </div>
+        <div class="hw-d">
+          <svg class="hw-d-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 14v-3M11.5 14V8M16 14v-5"/>
+          </svg>
+          <h4>Results your stakeholders can use</h4>
+          <p>Interactive outputs and portals instead of a PDF that gets filed. When the people you're accountable to can explore the findings, the findings get acted on.</p>
+        </div>
+        <div class="hw-d">
+          <svg class="hw-d-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.6"/>
+          </svg>
+          <h4>Silent or named — your call</h4>
+          <p>Everything can be delivered white-label under your brand and domain, or with EconLab named as the specialist input. Some clients want the credential visible; others don't. Both work.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CAPABILITIES ══ -->
+<section class="section-wrap s-services s-dark" id="services">
+  <div class="section-inner">
+    <div class="section-hd">
+      <div class="tag dark">// What we do</div>
+      <h2>Capabilities built on<br>decades of real expertise</h2>
+      <p>Rigorous economic analysis joined to practical data engineering — insights that stand up to scrutiny, delivered through tools that keep working after we leave.</p>
+    </div>
+
+    <div class="cap-grid">
+      <div class="cap-card c1">
+        <div class="cap-num">01 // Economic Insights</div>
+        <h3>Quantitative Economic Analysis</h3>
+        <p>Analysts with decades of experience across academia and industry, working from methods they publish and peer-review themselves.</p>
+        <div class="cap-list">
+          <div class="cap-item">Impact &amp; investment analysis and evaluation</div>
+          <div class="cap-item">Productivity analysis &amp; benchmarking</div>
+          <div class="cap-item">Time series &amp; forecasting</div>
+          <div class="cap-item">Non-market valuation — conjoint analysis &amp; choice experiments</div>
+          <div class="cap-item">Panel data methods</div>
+          <div class="cap-item">Experimental methods — lab, field &amp; randomised trials</div>
+          <div class="cap-item">Benefit-cost analysis &amp; policy review</div>
+          <div class="cap-item">Cohort, classification &amp; latent class methods</div>
+          <div class="cap-item">Index methods, data aggregation and more</div>
+        </div>
+      </div>
+
+      <div class="cap-card c2">
+        <div class="cap-num">02 // Data Engineering</div>
+        <h3>Modular Data Pipeline Support</h3>
+        <p>Modular, automated pipelines from entry portal to analysis-ready data — less duplication, and your people freed for the work that needs them.</p>
+        <div class="cap-list">
+          <div class="cap-item">Web-based and spreadsheet-template data entry systems</div>
+          <div class="cap-item">Automated validation — logical, type and value-based checks at point of entry</div>
+          <div class="cap-item">Data collation, processing, storage and version control</div>
+          <div class="cap-item">Integrated analytics, forecasting and reporting modules</div>
+          <div class="cap-item">Auth-based access regimes and database integrations</div>
+          <div class="cap-item">Australian-based data hosting available</div>
+        </div>
+      </div>
+
+      <div class="cap-card c3">
+        <div class="cap-num">03 // Engagement Tools</div>
+        <h3>Analytics Engagement &amp; Reporting</h3>
+        <p>Interactive, web-hosted engagement tools for your analytics outputs — a client-facing dashboard ready in days, not months.</p>
+        <div class="cap-list">
+          <div class="cap-item">Simple dashboards live within one day</div>
+          <div class="cap-item">Complex database-driven projects typically within 3–5 days</div>
+          <div class="cap-item">On-demand PDF reporting from templates — no analyst required</div>
+          <div class="cap-item">Fixed-price module approach — easy to scope and budget</div>
+          <div class="cap-item">White-label delivery under your own brand and domain</div>
+        </div>
+      </div>
+
+      <div class="cap-card c4">
+        <div class="cap-num">04 // Capability Transfer</div>
+        <h3>Technical Training &amp; Partnership</h3>
+        <p>Targeted programs that build quantitative capacity inside your team — so the capability stays with you and our role shifts toward advisory.</p>
+        <div class="cap-list">
+          <div class="cap-item">Structured training in quantitative methods and analytics tools</div>
+          <div class="cap-item">Team-based coding practices — git, reproducible pipelines, code review</div>
+          <div class="cap-item">Independent review of models, code and results</div>
+          <div class="cap-item">On-call technical support — ticket-based, no retainer required</div>
+          <div class="cap-item">Analytics wikis and decision-support documentation for your team</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ NETWORK ══ -->
+<section class="section-wrap s-network s-dark" id="network">
+  <div class="section-inner">
+    <div class="section-hd">
+      <div class="tag gold">// Expertise</div>
+      <h2>A curated network<br>of leading specialists</h2>
+      <p>Deep specialist expertise, accessible on demand and calibrated precisely to each project.</p>
+    </div>
+
+    <div class="net-grid">
+      <div class="net-left">
+        <p>Researchers represent a largely untapped pool of specialist expertise — analysts who have spent careers developing the methods in agricultural economics, environmental valuation, water policy and agri-food systems that commercial work now depends on.</p>
+        <p>EconLab has built a network of credentialed analysts across Australian and international institutions. When a project needs specialist depth, we match from that pool through a structured process — precisely the expertise the problem demands, and no more.</p>
+
+        <div class="net-points">
+          <div class="net-point">
+            <div class="net-dot">✓</div>
+            <span><strong style="color:rgba(255,255,255,.8)">Depth without lock-in.</strong> Specialists engage per project, so access scales with the problem rather than with headcount.</span>
+          </div>
+          <div class="net-point">
+            <div class="net-dot">✓</div>
+            <span><strong style="color:rgba(255,255,255,.8)">Rare expertise, rapidly accessible.</strong> Murray–Darling water markets, Reef catchment economics, choice experiment design — our network reaches leaders in each.</span>
+          </div>
+          <div class="net-point">
+            <div class="net-dot">✓</div>
+            <span><strong style="color:rgba(255,255,255,.8)">Right specialist, right project.</strong> A structured selection process matches expertise to problem, every time.</span>
+          </div>
+        </div>
+
+        <div class="net-stats">
+          <div class="net-stat">
+            <div class="net-stat-val">10s</div>
+            <div class="net-stat-label">of researchers across our associate network</div>
+          </div>
+          <div class="net-stat">
+            <div class="net-stat-val">$12m+</div>
+            <div class="net-stat-label">Total value of research and analytics projects delivered</div>
+          </div>
+          <div class="net-stat">
+            <div class="net-stat-val">4</div>
+            <div class="net-stat-label">Domain areas: agriculture, environment, water &amp; natural resources, agri-food</div>
+          </div>
+          <div class="net-stat">
+            <div class="net-stat-val">&gt;600%</div>
+            <div class="net-stat-label">Benefit-cost ratio demonstrated on data pipeline work at national scale</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ PROJECTS CAROUSEL ══ -->
+<style>
+.pc-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; }
+.pc-tag {
+  font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+  padding: 8px 16px; border-radius: 20px; cursor: pointer;
+  background: #fff; color: var(--eg-700); border: 1.5px solid var(--border-2);
+  transition: background .2s, color .2s, border-color .2s;
+}
+.pc-tag:hover { border-color: var(--eg-500); color: var(--eg-900); }
+.pc-tag[aria-selected="true"] { background: var(--eg-900); color: #fff; border-color: var(--eg-900); }
+.pc-tag:focus-visible { outline: 3px solid var(--eg-500); outline-offset: 2px; }
+
+.pc-viewport { position: relative; }
+.pc-slide { display: none; }
+.pc-slide.active { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; align-items: start; }
+
+.pc-nav { display: flex; align-items: center; gap: 12px; margin-top: 26px; }
+.pc-btn {
+  width: 42px; height: 42px; border-radius: 50%; cursor: pointer;
+  background: #fff; border: 1.5px solid var(--border-2); color: var(--eg-800);
+  font-size: 17px; line-height: 1; display: flex; align-items: center; justify-content: center;
+  transition: background .2s, border-color .2s;
+}
+.pc-btn:hover { background: var(--eg-100); border-color: var(--eg-500); }
+.pc-btn:focus-visible { outline: 3px solid var(--eg-500); outline-offset: 2px; }
+.pc-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--eg-600); }
+
+@media (max-width: 900px) { .pc-slide.active { grid-template-columns: 1fr; gap: 24px; } }
+</style>
+
+<section class="section-wrap s-cases" id="cases">
+  <div class="section-inner">
+    <div class="section-hd">
+      <div class="tag warm">// Projects</div>
+      <h2>Delivered at scale.<br><span class="si">Across real programs.</span></h2>
+      <p>Complex analytics, data pipeline and engagement projects delivered across agriculture, forestry and natural resource management.</p>
+    </div>
+
+    <div class="pc-tags" id="pc-tags" role="tablist" aria-label="Projects"></div>
+
+    <div class="pc-viewport" id="pc-viewport" aria-live="polite"></div>
+
+    <div class="pc-nav">
+      <button class="pc-btn" id="pc-prev" aria-label="Previous project">&#8592;</button>
+      <button class="pc-btn" id="pc-next" aria-label="Next project">&#8594;</button>
+      <span class="pc-count" id="pc-count"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TEAM ══ -->
+<style>
+.assoc-hd { margin: 54px 0 4px; }
+.assoc-hd h3 { font-size: 21px; font-weight: 700; letter-spacing: -.02em; color: var(--eg-900); margin-bottom: 5px; }
+.assoc-hd p  { font-size: 14px; color: var(--eg-600); max-width: 540px; line-height: 1.7; }
+.assoc-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 14px; margin-top: 20px;
+}
+.assoc-card {
+  background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg);
+  padding: 18px 20px; transition: box-shadow .2s, border-color .2s;
+}
+.assoc-card:hover { box-shadow: 0 6px 24px rgba(15,17,19,.1); border-color: var(--eg-300); }
+.assoc-card h4 { font-size: 15px; font-weight: 700; color: var(--eg-900); letter-spacing: -.01em; }
+.assoc-affil {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--eg-600);
+  letter-spacing: .02em; margin: 3px 0 0;
+}
+.assoc-top { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+.assoc-av {
+  width: 46px; height: 46px; border-radius: 50%; flex-shrink: 0;
+  background: var(--eg-200); color: var(--eg-700);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; letter-spacing: .02em;
+  position: relative; overflow: hidden;
+}
+.assoc-bio { font-size: 12.5px; color: var(--eg-600); line-height: 1.6; margin-bottom: 12px; }
+.assoc-card .team-tags { margin-top: 0; margin-bottom: 0; }
+</style>
+<section class="section-wrap s-team" id="team">
+  <div class="section-inner">
+    <div class="section-hd">
+      <div class="tag warm">// People</div>
+      <h2>Directors</h2>
+      <p>Economists who maintain active research programs alongside commercial delivery — so the methods stay current, peer-reviewed and defensible.</p>
+    </div>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-card-top">
+          <div class="team-av"><img src="photos/daniel-gregg.jpg" alt="Dr Daniel Gregg" loading="lazy" onerror="this.remove()">DG</div>
+          <div class="team-header">
+            <h3>Dr Daniel Gregg</h3>
+            <div class="team-role">Director — Operations &amp; Technology</div>
+            <div class="team-affil">Heuris Pty Ltd · Flinders University</div>
+          </div>
+        </div>
+        <div class="team-card-body">
+          <p class="team-bio">Twenty years as a research economist in rural development, environmental valuation and productivity analysis. Daniel designs the delivery systems behind EconLab's work — data pipelines, analytics and reporting frameworks proven at national scale — and leads operations and technology.</p>
+          <div class="team-tags">
+            <span class="team-tag">Agri-food systems</span>
+            <span class="team-tag">Productivity analysis</span>
+            <span class="team-tag">Choice experiments</span>
+            <span class="team-tag">Data pipelines</span>
+          </div>
+          <div class="team-card-contact">
+            <a href="tel:+61476184905">(+61) 476 184 905</a> · <a href="mailto:contact@econlab.com.au">contact@econlab.com.au</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-card-top">
+          <div class="team-av"><img src="photos/megan-star.jpg" alt="Dr Megan Star" loading="lazy" onerror="this.remove()">MS</div>
+          <div class="team-header">
+            <h3>Dr Megan Star</h3>
+            <div class="team-role">Director — Engagement, Partnerships &amp; Agricultural Industries</div>
+            <div class="team-affil">CQUniversity · Star Economics</div>
+          </div>
+        </div>
+        <div class="team-card-body">
+          <p class="team-bio">Applied economist working on investment prioritisation, bio-economic modelling and the productivity–environment trade-offs of Australian agriculture — grazing systems, climate-variable production and Reef catchment management. Megan leads engagement and EconLab's agricultural industry work.</p>
+          <div class="team-tags">
+            <span class="team-tag">Investment analysis</span>
+            <span class="team-tag">Bio-economic modelling</span>
+            <span class="team-tag">NRM economics</span>
+            <span class="team-tag">Grazing systems</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="team-card">
+        <div class="team-card-top">
+          <div class="team-av"><img src="photos/john-kandulu.jpg" alt="Dr John Kandulu" loading="lazy" onerror="this.remove()">JK</div>
+          <div class="team-header">
+            <h3>Dr John Kandulu</h3>
+            <div class="team-role">Director — Impact, Government &amp; Natural Resources</div>
+            <div class="team-affil">University of Adelaide</div>
+          </div>
+        </div>
+        <div class="team-card-body">
+          <p class="team-bio">Senior research economist across government, NGO and private sectors, having led more than 35 research projects and secured over $3m in research funding. John's work spans impact evaluation, benefit-cost analysis, water policy and biosecurity, with particular depth in Murray–Darling Basin water markets.</p>
+          <div class="team-tags">
+            <span class="team-tag">Impact evaluation</span>
+            <span class="team-tag">Benefit-cost analysis</span>
+            <span class="team-tag">Water policy</span>
+            <span class="team-tag">Murray–Darling Basin</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="assoc-hd">
+      <div class="tag warm">// Associates</div>
+      <h3>Associates</h3>
+      <p>Research-active specialists who join projects where their expertise is exactly what the problem needs.</p>
+    </div>
+
+    <div class="assoc-grid">
+      <div class="assoc-card">
+        <div class="assoc-top">
+          <div class="assoc-av"><img src="photos/iain-fraser.jpg" alt="Prof. Iain Fraser" loading="lazy" onerror="this.remove()">IF</div>
+          <div>
+            <h4>Prof. Iain Fraser</h4>
+            <div class="assoc-affil">University of Kent · Editor-in-Chief, Q Open</div>
+          </div>
+        </div>
+        <p class="assoc-bio">Professor of Agri-Environmental Economics and editor of a leading international journal in the field. Career spanning choice experiments, non-market valuation, agri-environmental contracts and applied econometrics, with prior positions at La Trobe, Imperial College and Manchester.</p>
+        <div class="team-tags">
+          <span class="team-tag">Choice experiments</span>
+          <span class="team-tag">Non-market valuation</span>
+          <span class="team-tag">Applied econometrics</span>
+        </div>
+      </div>
+
+      <div class="assoc-card">
+        <div class="assoc-top">
+          <div class="assoc-av"><img src="photos/jeff-connor.jpg" alt="Prof. Jeff Connor" loading="lazy" onerror="this.remove()">JC</div>
+          <div>
+            <h4>Prof. Jeff Connor</h4>
+            <div class="assoc-affil">Adelaide University · AARES President, 2025</div>
+          </div>
+        </div>
+        <p class="assoc-bio">Professor of Water Economics specialising in integrated economic, environmental and social systems modelling. Fifteen years at CSIRO as economist and group leader advising the Murray–Darling Basin Authority and state agencies, with 85+ peer-reviewed publications.</p>
+        <div class="team-tags">
+          <span class="team-tag">Water economics</span>
+          <span class="team-tag">Integrated modelling</span>
+          <span class="team-tag">Climate &amp; NRM</span>
+        </div>
+      </div>
+
+      <!-- ══ ASSOCIATE TEMPLATE — copy this block, fill in, delete the comment markers ══
+      <div class="assoc-card">
+        <div class="assoc-top">
+          <div class="assoc-av"><img src="photos/first-last.jpg" alt="Prof./Dr NAME" loading="lazy" onerror="this.remove()">XX</div>
+          <div>
+            <h4>Prof./Dr NAME</h4>
+            <div class="assoc-affil">INSTITUTION · ROLE OR HONOUR</div>
+          </div>
+        </div>
+        <p class="assoc-bio">Sentence one: current role and core expertise. Sentence two: one or two concrete credibility markers — publications, funding, major programs.</p>
+        <div class="team-tags">
+          <span class="team-tag">Tag one</span>
+          <span class="team-tag">Tag two</span>
+          <span class="team-tag">Tag three</span>
+        </div>
+      </div>
+      ══ END TEMPLATE ══ -->
+
+    </div>
+
+    <div class="team-network">
+      <div class="tn-left">
+        <h3>Plus our broader research network</h3>
+        <p>Beyond our named associates, EconLab maintains a curated pool of researchers and domain economists across Australian and international institutions. When a project demands rare or specialised expertise, we draw on that network through a structured process — the right specialist, at the right time.</p>
+      </div>
+      <div class="tn-right">
+        <div class="tn-stat">
+          <div class="tn-stat-val">10s</div>
+          <div class="tn-stat-lbl">of researchers across our associate network</div>
+        </div>
+        <div class="tn-stat">
+          <div class="tn-stat-val">4</div>
+          <div class="tn-stat-lbl">Domain areas: agriculture, environment, water &amp; natural resources, agri-food</div>
+        </div>
+        <div class="tn-stat">
+          <div class="tn-stat-val">35+</div>
+          <div class="tn-stat-lbl">Major research projects led by our directors</div>
+        </div>
+        <div class="tn-stat">
+          <div class="tn-stat-val">Intl.</div>
+          <div class="tn-stat-lbl">Network spans Australia, UK, Europe and beyond</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CTA ══ -->
+<style>
+.cta-inner { text-align: center; }
+.cta-inner p { margin-left: auto; margin-right: auto; }
+.cta-routes {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 28px;
+  max-width: 780px; margin: 30px auto 0; text-align: left;
+}
+.cta-route { padding-top: 18px; border-top: 1px solid rgba(255,255,255,.2); }
+.cta-route h3 {
+  font-size: 15px; font-weight: 700; color: #fff;
+  letter-spacing: -.01em; margin-bottom: 7px;
+}
+.cta-route p { font-size: 13.5px; color: rgba(255,255,255,.74); line-height: 1.7; margin: 0; }
+@media (max-width: 700px) {
+  .cta-routes { grid-template-columns: 1fr; gap: 18px; max-width: 460px; margin-top: 26px; }
+}
+.cta-email {
+  display: inline-block; margin-top: 34px;
+  font-family: 'Instrument Serif', serif; font-weight: 400;
+  font-size: clamp(28px, 5vw, 52px); letter-spacing: -.02em; line-height: 1.15;
+  color: #fff; text-decoration: none;
+  border-bottom: 2px solid rgba(255,255,255,.35); padding-bottom: 6px;
+  transition: border-color .2s, color .2s; word-break: break-word;
+}
+.cta-email:hover { color: var(--eg-200); border-bottom-color: #fff; }
+.cta-email:focus-visible { outline: 3px solid var(--eg-300); outline-offset: 6px; }
+</style>
+<section class="s-cta" id="contact">
+  <div class="cta-inner">
+    <div class="tag dark">// Get in touch</div>
+    <h2>Tell us what you're<br><span class="si">working on.</span></h2>
+    <div class="cta-routes">
+      <div class="cta-route">
+        <h3>Working with us directly</h3>
+        <p>Need specific, targeted input? We can scope it and get you moving.</p>
+      </div>
+      <div class="cta-route">
+        <h3>Bring us into your work</h3>
+        <p>We work alongside your team in bigger projects as your quant team, expert input or even to build capability within your org.</p>
+      </div>
+    </div>
+    <a class="cta-email" href="mailto:contact@econlab.com.au?subject=EconLab%20enquiry">contact@econlab.com.au</a>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">EconLab<span> · quantitative economics &amp; analytics</span></div>
+    <div class="footer-links">
+      <a href="#services">Capabilities</a>
+      <a href="#network">Expertise</a>
+      <a href="#cases">Projects</a>
+      <a href="#team">People</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="footer-right">
+      <div class="footer-copy">© 2026 Heuris Pty Ltd t/a EconLab · econlab.com.au</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PROJECTS — edit this array to add, remove or reorder projects.
+   Everything in the Projects carousel is generated from this data.
+   Copy one { ... } block, paste it, change the text. Nothing else to touch.
+
+   FIELD GUIDE
+     id       short unique slug, letters/numbers/dashes only
+     tag      text shown on the selector pill (keep it short — 2 to 4 words)
+     domain   small line above the title, use " · " between terms
+     title    the project headline
+     quote    pull-quote; renders in quotation marks, so don't add your own
+     summary  one paragraph of context
+     points   bullet list — any number, 4 to 6 reads best
+     metrics  headline figures — any number, 2 or 4 reads best
+              use &lt; and &gt; instead of < and >  (e.g. "&lt;1 day")
+     flowLabel  caption on the flow panel
+     steps    numbered flow, any number, 4 reads best
+   ══════════════════════════════════════════════════════════════════════════ */
+const PROJECTS = [
+  {
+    id: "natcap",
+    tag: "Natural Capital Benchmarking",
+    domain: "Agriculture · Livestock · Natural Capital",
+    title: "Globally unique farm natural capital benchmarking at national scale",
+    quote: "A comprehensive, automated pipeline from data entry through natural capital and productivity benchmarking — with web-based reporting for individual farm participants.",
+    summary: "EconLab designed and delivered the full analytics and data pipeline architecture for a nationally-scaled livestock farm benchmarking program — the first of its kind globally to directly link measured ecosystem condition to farm financial performance. Covering 847 farm records, the project runs fully automated from data upload through to individual farm reports delivered via an interactive web portal.",
+    points: [
+      "Automated benchmarking system covering EBIT, productivity, resilience and natural capital models",
+      "Individual farm web reports generated on-demand from a single integrated pipeline",
+      "Economic measurement frameworks that underpinned more than $5m in competitive funding bids",
+      "Git-based coding practices ensuring reliability and long-term maintainability",
+      "API-based Python data validation system built to replace manual upload processes",
+      "Staff upskilling program enabling client team to operate the pipeline independently"
+    ],
+    metrics: [
+      { value: "847",     label: "Livestock farm records benchmarked across productivity and natural capital" },
+      { value: "$5m+",    label: "Competitive funding secured using EconLab's economic measurement frameworks" },
+      { value: "3",       label: "Integrated economic models: EBIT, resilience, and natural capital linkage" },
+      { value: "&lt;1 day", label: "Automated report generation per farm, down from days of manual analysis" }
+    ],
+    flowLabel: "How EconLab created value",
+    steps: [
+      { label: "RESEARCH PROGRAM DESIGN", title: "Impact-led benchmarking framework",
+        text: "Designed a comprehensive research program establishing how ecosystem condition on livestock farms links to financial performance — first program of its kind globally." },
+      { label: "DATA PIPELINE", title: "Python pipeline — raw data to analysis-ready variables",
+        text: "Built an automated pipeline transforming raw farm business records and natural capital measurements into theoretically-valid production and profit variables, ready for modelling." },
+      { label: "ANALYSIS", title: "Unique DEA benchmarking treating nat. capital as a stock",
+        text: "Developed novel data envelopment analysis methods treating natural capital as a slow-moving stock — enabling like-for-like farm comparisons and quantifying the impact of ecosystem condition on business performance." },
+      { label: "CLIENT ENGAGEMENT", title: "Showcase dashboard wrapping the benchmarking program",
+        text: "847 farms, live interactive results and individual farm PDF reports — delivered end-to-end in 18 months." }
+    ]
+  },
+  {
+    id: "timber",
+    tag: "Timber Industry Forecasting",
+    domain: "Forestry · Commodity Forecasting",
+    title: "Automated timber industry demand and supply forecasting",
+    quote: "Pipeline methods that drastically reduce staff inputs into forecasting and reporting while simultaneously improving forecast accuracy through advanced econometric models.",
+    summary: "EconLab developed and delivered a forecasting pipeline for timber and wood products demand — demonstrating how automation can displace manual analyst labour for routine forecasting tasks while improving output quality. The project showed both the feasibility of full pipeline automation and a clear pathway to integration with existing stakeholder dashboards.",
+    points: [
+      "Substantial reduction in staff hours for quarterly forecasting and reporting cycle",
+      "Improved predictive accuracy via advanced time-series models replacing spreadsheet approaches",
+      "Automated integration of forecast outputs into existing web-based stakeholder platforms",
+      "Generalisable pipeline approach demonstrated across multiple product categories"
+    ],
+    metrics: [
+      { value: "80%",  label: "Reduction in analyst time for quarterly forecasting cycle" },
+      { value: "+22%", label: "Improvement in forecast accuracy vs. prior manual approach" }
+    ],
+    flowLabel: "How EconLab created value",
+    steps: [
+      { label: "AUDIT & DESIGN", title: "Diagnosed where manual effort was concentrated",
+        text: "Mapped the existing quarterly forecasting workflow to identify the highest-cost, most automatable steps in data assembly, model re-running and report production." },
+      { label: "PIPELINE BUILD", title: "Automated data ingestion and model execution",
+        text: "Built a pipeline replacing manual spreadsheet assembly with automated data ingestion, advanced time-series model fitting, and structured output generation." },
+      { label: "VALIDATION", title: "Demonstrated improved accuracy vs. prior approach",
+        text: "Advanced models outperformed the prior manual approach by 22% on MAPE — with no increase in analyst time per cycle." },
+      { label: "DASHBOARD INTEGRATION", title: "Outputs fed directly into existing stakeholder dashboards",
+        text: "Pipeline outputs connected to existing web dashboards — stakeholders access current forecasts without any manual intervention from analysts." }
+    ]
+  },
+  {
+    id: "trials",
+    tag: "Crop Trials Data Pipeline",
+    domain: "Grains Research · Data Infrastructure",
+    title: "Cost-reducing data pipeline for crop field trials research",
+    quote: "A data management and reporting system demonstrably reducing costs while improving reliability — targeting national scaling across Australia's grain research programs.",
+    summary: "EconLab designed and built a trial data pipeline for crop field trials research, targeting one of the most cost-intensive manual processes in Australian agricultural R&D — data collation, validation and reporting for trials programs funded at tens of millions of dollars annually. Early results demonstrate the potential for substantial national cost savings and significantly improved research adoption by growers.",
+    points: [
+      "Automated data collation and validation replacing expensive manual processes",
+      "Point-of-entry validation eliminating costly downstream errors",
+      "Web-based data entry portals improving data quality and reducing entry costs",
+      "Basic analytics automation replacing commonly outsourced tasks",
+      "Farmer-facing results portal dramatically improving grower engagement with trial outcomes"
+    ],
+    metrics: [
+      { value: "$1m+",    label: "Estimated annual savings at national scale for crop trials data processing" },
+      { value: "&gt;600%", label: "Benefit-cost ratio under conservative national-scale assumptions" }
+    ],
+    flowLabel: "How EconLab created value",
+    steps: [
+      { label: "DATA ENTRY PORTAL", title: "Web-based portals replacing paper and spreadsheet entry",
+        text: "Designed web portals with point-of-entry validation — logical, type and value-based checks — eliminating data errors at source." },
+      { label: "AUTOMATED PIPELINE", title: "Collation, processing and analytics — fully automated",
+        text: "Replaced commonly-outsourced analytics tasks with automated routines — saving tens of thousands of dollars annually in data processing costs." },
+      { label: "ANALYSIS & REPORTING", title: "Standardised trial analysis and reporting",
+        text: "Automated statistical analysis and report generation for trial results, replacing bespoke manual work for each trial site and season." },
+      { label: "GROWER ENGAGEMENT PORTAL", title: "Results portal driving higher grower adoption",
+        text: "A farmer-facing results portal connecting growers to trial outcomes — designed to turn research investment into on-farm behaviour change at scale." }
+    ]
+  },
+  {
+    id: "aasf",
+    tag: "Sustainability Framework Design",
+    domain: "Agri-food · Institutional Economics · Policy Design",
+    title: "Economic case and governance design for a national agricultural sustainability framework",
+    quote: "Australia has a small window of opportunity to lead the world on sustainability communication.",
+    summary: "The Australian Farm Institute engaged Heuris to build the economic rationale and governance design for the Australian Agricultural Sustainability Framework, a Commonwealth-funded initiative to give Australian agriculture a common sustainability language. The framework had objectives but no articulated problem definition. We established the gap in economic terms — an information failure across a fragmented certification landscape — then designed a governance structure to close it, stress-tested against international precedent.",
+    points: [
+      "Defined the framework's rationale as an information failure, giving the program a testable problem statement it previously lacked",
+      "Mapped the sustainability landscape into drivers, facilitators, metrics and assessment programs — the classification the framework now rests on",
+      "Applied the Regulator–Intermediary–Target model to position the framework as a domestic translation layer for global standards",
+      "Designed a four-part governance structure: Translation and Communications Group, industry Technical Working Groups, Markets and Information Group, and Board",
+      "Identified independence from both industry capture and government regulation as the precondition for the framework's legitimacy",
+      "Set out international recognition pathways, including ISEAL standards-holder membership and mutual mapping to existing frameworks"
+    ],
+    metrics: [
+      { value: "3", label: "Structured review reports plus a synthesis, forming the framework's evidence base" },
+      { value: "4", label: "Governance components designed, from technical working groups through to board" },
+      { value: "2", label: "International governance case studies used to stress-test the design" },
+      { value: "57", label: "Competing Australian sustainability schemes mapped in the underpinning review" }
+    ],
+    flowLabel: "How EconLab created value",
+    steps: [
+      { label: "PROBLEM DEFINITION", title: "Named the market failure the framework exists to correct",
+        text: "A rationale was missing from the program documentation, leaving objectives untethered. We defined the gap as information failure — producers unable to identify which schemes meet which market requirements, at costs that deter participation entirely." },
+      { label: "ECONOMIC FOUNDATIONS", title: "Why sustainability claims fail without credible assurance",
+        text: "Environmental production claims are strong credence attributes: unverifiable by testing the product. We showed how the resulting asymmetry produces both green-washing and gold-plating, and why neither resolves without an intermediary." },
+      { label: "GOVERNANCE DESIGN", title: "A translation layer between global frameworks and Australian industry",
+        text: "Using the Regulator–Intermediary–Target model, we designed a structure positioning the framework as an accredited domestic translation of international standards — with independence from industry capture built into the governance, not added afterwards." },
+      { label: "STRESS-TESTING", title: "Tested the design against precedent and failure",
+        text: "Benchmarked the proposed structure against GLOBALG.A.P.'s governance and against a documented governance failure in Australian construction, then set out test cases and open questions for the program's next phase." }
+    ]
+  }
+];
+
+/* ── Carousel renderer — no need to edit below this line ─────────────────── */
+(function () {
+  const tagsEl = document.getElementById('pc-tags');
+  const viewEl = document.getElementById('pc-viewport');
+  const countEl = document.getElementById('pc-count');
+  if (!tagsEl || !viewEl) return;
+
+  const esc = t => String(t).replace(/&(?!(amp|lt|gt|quot|#\d+);)/g, '&amp;');
+  let current = 0;
+
+  function stepHTML(st, i, total) {
+    const shades = ['var(--eg-500)', 'var(--eg-600)', 'var(--eg-700)', 'var(--eg-900)'];
+    const bg = shades[Math.min(i, shades.length - 1)];
+    const connector = i < total - 1
+      ? '<div style="width:2px;flex:1;min-height:26px;background:var(--eg-300);margin:4px 0"></div>' : '';
+    return `
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
+          <div style="width:32px;height:32px;border-radius:50%;background:${bg};display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0">${i + 1}</div>
+          ${connector}
+        </div>
+        <div style="padding-bottom:${i < total - 1 ? 20 : 0}px">
+          <div style="font-size:10px;font-weight:700;color:var(--eg-600);font-family:'JetBrains Mono',monospace;letter-spacing:.06em;margin-bottom:3px">${esc(st.label)}</div>
+          <div style="font-size:12.5px;font-weight:600;color:var(--eg-900);margin-bottom:3px">${esc(st.title)}</div>
+          <div style="font-size:11.5px;color:var(--eg-600);line-height:1.55">${esc(st.text)}</div>
+        </div>
+      </div>`;
+  }
+
+  function slideHTML(p) {
+    return `
+      <div class="case-content">
+        <span class="case-domain">${esc(p.domain)}</span>
+        <h3>${esc(p.title)}</h3>
+        ${p.quote ? `<p class="case-quote">&ldquo;${esc(p.quote)}&rdquo;</p>` : ''}
+        <p>${esc(p.summary)}</p>
+        <div class="case-points">
+          ${(p.points || []).map(pt => `<div class="case-point">${esc(pt)}</div>`).join('')}
+        </div>
+        <div class="case-metrics">
+          ${(p.metrics || []).map(m => `
+            <div class="case-metric">
+              <div class="case-metric-val">${m.value}</div>
+              <div class="case-metric-label">${esc(m.label)}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="case-visual" style="background:var(--eg-50)">
+        <div class="cv-head">
+          <div class="cvdots">
+            <div class="cvdot" style="background:#c8ccd0"></div>
+            <div class="cvdot" style="background:#aeb3b8"></div>
+            <div class="cvdot" style="background:#94999f"></div>
+          </div>
+          <span class="cv-lbl">${esc(p.flowLabel || '')}</span>
+        </div>
+        <div class="cv-body" style="padding:16px">
+          <div style="display:flex;flex-direction:column;gap:0">
+            ${(p.steps || []).map((st, i) => stepHTML(st, i, p.steps.length)).join('')}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  // Build once
+  tagsEl.innerHTML = PROJECTS.map((p, i) =>
+    `<button class="pc-tag" role="tab" id="pc-tag-${p.id}" aria-controls="pc-slide-${p.id}"
+             aria-selected="${i === 0}" data-i="${i}">${esc(p.tag)}</button>`).join('');
+
+  viewEl.innerHTML = PROJECTS.map((p, i) =>
+    `<div class="pc-slide${i === 0 ? ' active' : ''}" id="pc-slide-${p.id}"
+          role="tabpanel" aria-labelledby="pc-tag-${p.id}">${slideHTML(p)}</div>`).join('');
+
+  const tagBtns = [...tagsEl.querySelectorAll('.pc-tag')];
+  const slides = [...viewEl.querySelectorAll('.pc-slide')];
+
+  function show(i) {
+    current = (i + PROJECTS.length) % PROJECTS.length;
+    slides.forEach((el, k) => el.classList.toggle('active', k === current));
+    tagBtns.forEach((el, k) => el.setAttribute('aria-selected', String(k === current)));
+    if (countEl) countEl.textContent = `${current + 1} / ${PROJECTS.length}`;
+  }
+
+  tagBtns.forEach(b => b.addEventListener('click', () => show(+b.dataset.i)));
+  document.getElementById('pc-prev').addEventListener('click', () => show(current - 1));
+  document.getElementById('pc-next').addEventListener('click', () => show(current + 1));
+  tagsEl.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight') { show(current + 1); tagBtns[current].focus(); }
+    if (e.key === 'ArrowLeft')  { show(current - 1); tagBtns[current].focus(); }
+  });
+
+  show(0);
+})();
+
+// Scroll-triggered fade-up
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.cap-card, .team-card, .assoc-card, .net-stat').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(14px)';
+  el.style.transition = 'opacity .5s ease, transform .5s ease';
+  obs.observe(el);
+});
+</script>
+</body>
+</html>
